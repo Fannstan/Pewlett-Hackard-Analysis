@@ -62,3 +62,30 @@ DROP TABLE mentorship_eligibilty;
 	
 SELECT * FROM mentorship_eligibility;
 
+-- Titles of mentorship eligible employees --
+SELECT COUNT(me.title), me.title 
+INTO mentorship_titles
+FROM mentorship_eligibility AS me
+GROUP BY me.title
+ORDER BY COUNT(me.title) DESC; 
+
+SELECT * FROM mentorship_titles;
+
+-- Retiring employees in current position 10+ years 
+SELECT DISTINCT ON (rt.emp_no) rt.emp_no,
+	rt.first_name,
+	rt.last_name,
+	rt.title
+INTO unique_titles_ten_years
+FROM retirement_titles AS rt
+WHERE (rt.from_date <= '1992-01-01') AND (rt.to_date = '9999-01-01')
+ORDER BY rt.emp_no ASC, rt.to_date DESC;
+
+-- Mentors count with 10 years tenure by title
+SELECT COUNT (utty.title), utty.title
+INTO ten_year_mentor_title
+FROM unique_titles_ten_years as utty
+GROUP BY utty.title
+ORDER BY COUNT(utty.title) DESC; 
+
+SELECT * FROM ten_year_mentor_title;
